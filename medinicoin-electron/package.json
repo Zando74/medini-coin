@@ -1,0 +1,16 @@
+{
+  "name": "medinicoin-electron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "electron": "^17.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start:electron": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

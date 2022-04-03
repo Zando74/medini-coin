@@ -1,0 +1,60 @@
+<p-toast></p-toast>
+<div style="display: flex;flex-direction: row;">
+    <div style="width:50vw">
+        <p-panel header="clé publique à renseigner pour recevoir des medinicoins" [style]="{ 'width' : '50vw' }">
+            <p style="font-size: small;" >{{ this.publicKey }}</p>
+        </p-panel>
+
+        <div style="display: flex;flex-direction: row;">
+            <div style="flex-direction: column;">
+                <p-panel header="Vous disposer actuellement de " [style]="{ 'width' : '20vw' }">
+                    <p style="font-size:xx-large;text-align: center;" >{{ this.blockchainService.updatedFunds }} MEDINICOIN</p>
+                </p-panel>
+                <p-panel header="Pool de transactions" [style]="{ 'min-height' : '200px' }">
+                    <p style="font-size:large;text-align: center;height: 66px;">
+                        {{ this.blockchainService.blockchain.getCurrentTransactions().length }} / 2
+                    </p>
+                </p-panel>
+            </div>
+            
+            <p-panel header="Faire une transaction " [style]="{ 'width' : '30vw' }">
+                <span class="p-float-label">
+                    <p-inputNumber id="float-input-amt" [(ngModel)]="amountToSend"></p-inputNumber> &nbsp; &nbsp;
+                    <label for="float-input-amt">Montant</label>
+                    <p-button label="Envoyer" icon="pi pi-check" iconPos="right" (click)="buildNewTransaction()"></p-button>
+                </span>
+                <br/>
+                <span class="p-float-label">
+                    <textarea id="float-input-pbk" rows="10" cols="45" pInputTextarea [(ngModel)]="pbkToSend"></textarea>
+                    <label for="float-input-pbk">Clé publique du receveur</label>
+                </span>
+            </p-panel>    
+        </div>
+        <p-panel header="Statut réseau (nombre de connectés : {{ this.peerService.otherPeers.length + 1 }}) " [style]="{ 'width' : '50vw' }">
+            <p style="font-size:medium;text-align: center;color:green;font-weight: bold;" >{{ this.peerService.networkStatus }} </p>
+        </p-panel>
+    </div>
+    <div style="width: 500vw;">
+        <p-scrollPanel [style]="{ height: '615px'}">
+            <p-accordion [style]="{ 'width' : '50vw' }">
+                <p-accordionTab *ngFor="let block of this.blockchainService.blockchain.getChain()" header="block {{ block.getIndex() }}" [style]="{ 'width' : '30vw', 'text-align' : 'center' }">
+                Hash du block : {{ block.getHash() }} <br/>
+                nonce : {{ block.getNonce() }} <br/>
+                prev : {{ block.getPrev() }} <br/>
+                mineur : {{ block.getMiner() }} <br/>
+                transactions : <br/>
+                <p *ngFor="let transaction of block.getTransactions()">
+                    -------------------------------------------<br/>
+                        Source : {{ transaction.getFrom() }} <br/>
+                        Destination : {{ transaction.getTo() }} <br/>
+                        MONTANT : {{ transaction.getAmount() }} <br/>
+                </p> 
+                </p-accordionTab>
+            </p-accordion>
+        </p-scrollPanel>
+        <p-panel header="Dernier hash calculé" [style]="{ 'width' : '50vw' }">
+            <p style="font-size:medium;text-align: center;color:green;font-weight: bold;" >{{ this.proof.currentHash }} </p>
+        </p-panel>
+    </div>
+</div>
+

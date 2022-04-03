@@ -1,0 +1,55 @@
+<div *ngIf="!this.firstTime">
+    <h1 style="text-align: center;color:rgb(90, 90, 185)">Authentification à partir de vos clés RSA</h1>
+
+    <div style="display: flex; flex-direction: row;">
+        <p-card header="import de votre clé publique" [style]="{ 'height' : '450px', 'width' : '710px', 'font-weight' : 'bold' }">
+            <span class="p-float-label">
+                <textarea id="float-input-pbk" rows="15" cols="85" pInputTextarea [(ngModel)]="stringPbkImport"></textarea>
+                <label for="float-input-pbk">Clé publique</label>
+            </span>
+        </p-card>
+        <p-card header="import de votre clé privé" [style]="{ 'height' : '450px', 'width' : '710px', 'font-weight' : 'bold' }">
+            <span class="p-float-label">
+                <textarea id="float-input-pvk" rows="15" cols="85" pInputTextarea [(ngModel)]="stringPvkImport"></textarea>
+                <label for="float-input-pvk">Clé privé</label>
+            </span>
+        </p-card>
+    </div>
+    <div *ngIf="!keyloaded" style="text-align: center;margin-top: 10px;">
+        <p style="font-weight: bold;color: red;">{{this.error}}</p>
+        <p-button label="Utiliser ces clés" icon="pi pi-check" iconPos="right" (click)="loadKey()"></p-button><br/><br/>
+        <a style="font-weight: bold;cursor: pointer;color:rgb(90, 90, 185)" (click)="this.firstTime = true">Première connexion ? Générer une paire de clés</a>
+    </div>
+    
+</div>
+
+
+<div *ngIf="this.firstTime">
+    <h1 style="text-align: center;color:rgb(90, 90, 185)">Génération d'une paire de clé RSA</h1>
+    <div style="display: flex; flex-direction: row;">
+        <p-card header="Clé Publique généré" [style]="{ 'height' : '450px', 'width' : '710px', 'font-weight' : 'bold' }">
+            <p>{{ this.stringPbk }}</p>
+        </p-card>
+        <p-card header="Clé privé généré" [style]="{ 'height' : '450px', 'width' : '710px', 'font-weight' : 'bold' }">
+            <p>{{ this.stringPvk }}</p>
+        </p-card>
+    </div>
+    <div *ngIf="!keyloaded" style="text-align: center;margin-top: 10px;">
+        <p-button label="Générer" icon="pi pi-cog" iconPos="right" (click)="this.generateKey()"></p-button><br/><br/>
+        <a style="font-weight: bold;cursor: pointer;color:rgb(90, 90, 185)" (click)="this.firstTime = false">Vous possedez une paire de clé ? l'importer </a>
+    </div>
+</div>
+
+
+<div style="text-align:center;margin-top: 10px;" *ngIf="keyloaded">
+    <p-button label="Rejoindre le réseau" icon="pi pi-check" iconPos="right" [routerLink]="['/blockchain']"></p-button><br/><br/>
+</div>
+
+<p-card [style]="{ 'text-align' : 'center' }">
+    <i class="pi pi-exclamation-triangle" style="font-size: 5rem;color:rgb(90, 90, 185)" ></i>
+    <h2 style="text-align: center;color:rgb(90, 90, 185)">Ces clés sont à conserver, il s'agit de votre identité sur le réseau Medinicoin</h2>
+</p-card>
+
+
+
+
