@@ -24,7 +24,7 @@ class Transaction {
        return jsencrypt.verify(`${this.from}-${this.to}-${this.amount}`,this.signature,CryptoJS.SHA256 as unknown as (str: string) => string)
     }
 
-    public validTransaction = (blocks: Block[]) => {
+    public validTransaction = (blocks: Block[], currentTransactions : Transaction[],blockchainCheck = false) => {
         let funds = 0;
         for(let block of blocks){
             if(block.getMiner() == this.from){
@@ -37,6 +37,11 @@ class Transaction {
                 if(transaction.getTo() == this.from){
                     funds += transaction.getAmount();
                 }
+            }
+        }
+        for(let transaction of currentTransactions){
+            if((transaction.getFrom() == this.from)&&(!blockchainCheck)){
+                funds -= transaction.getAmount();
             }
         }
         if(funds < this.amount){

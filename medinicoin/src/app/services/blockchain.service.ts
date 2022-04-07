@@ -33,7 +33,7 @@ export class BlockchainService {
       this.recomputeFunds()
       return;
     }
-    if(this.CheckBlockchainValidity(data.blocks)&&this.checkCurrentTransactionValidity(data.blocks,data.currentTransactions)){
+    if(this.CheckBlockchainValidity(data.blocks,data.currentTransactions)&&this.checkCurrentTransactionValidity(data.blocks,data.currentTransactions)){
       if((this.blockchain.getChain().length == data.blocks.length)&&(this.blockchain.getCurrentTransactions().length < data.currentTransactions.length)){
         this.blockchain.setCurrentTransaction(data.currentTransactions);
         this.recomputeFunds();
@@ -63,9 +63,14 @@ export class BlockchainService {
           chain.push(newBlock)
       }
 
+      let currTrans = [];
+      for(let transaction of currentTransactions){
+        currTrans.push(new Transaction(transaction.from,transaction.to,transaction.amount,transaction.signature))
+      }
+
       for(let i=0;i<currentTransactions.length;i++){
         let newTransaction = new Transaction(currentTransactions[i].from,currentTransactions[i].to,currentTransactions[i].amount,currentTransactions[i].signature as string)
-        if(!newTransaction.validTransaction(chain)||!newTransaction.verifyTransaction()){
+        if(!newTransaction.validTransaction(chain,currTrans)||!newTransaction.verifyTransaction()){
 
           return false;
         }
@@ -79,7 +84,7 @@ export class BlockchainService {
 
 
 
-  CheckBlockchainValidity(blocks : any){
+  CheckBlockchainValidity(blocks : any,currentTransactions : any){
     try{
       let chain = [];
       for(let block of blocks){
@@ -94,31 +99,36 @@ export class BlockchainService {
           newBlock.hashValue();
           chain.push(newBlock)
       }
+
+      let currTrans = [];
+      for(let transaction of currentTransactions){
+        currTrans.push(new Transaction(transaction.from,transaction.to,transaction.amount,transaction.signature))
+      }
       
       
       if(chain[0].getHash() != this.blockchain.getChain()[0].getHash()){
-
+        console.log("first block error")
         return false;
       }
       if(chain[0].getPrev() != this.blockchain.getChain()[0].getPrev()){
-
+        console.log("first block error")
         return false;
       }
       if(chain[0].getNonce() != this.blockchain.getChain()[0].getNonce()){
-
+        console.log("first block error")
         return false;
       }
       for(let transaction of chain[0].getTransactions()){
         if(transaction.getFrom() != this.blockchain.getChain()[0].getTransactions()[0].getFrom()){
-
+          console.log("first block error")
           return false;
         }
         if(transaction.getTo() != this.blockchain.getChain()[0].getTransactions()[0].getTo()){
-
+          console.log("first block error")
           return false;
         }
         if(transaction.getAmount() != this.blockchain.getChain()[0].getTransactions()[0].getAmount()){
-
+          console.log("first block error")
           return false;
         }
       }
@@ -126,14 +136,13 @@ export class BlockchainService {
         // check transactions validity
         for(let j=0;j<chain[i].getTransactions().length;j++){
           let newTransaction : Transaction = new Transaction(chain[i].getTransactions()[j].getFrom(),chain[i].getTransactions()[j].getTo(),chain[i].getTransactions()[j].getAmount(),chain[i].getTransactions()[j].getSignature() as string)
-          if(!newTransaction.validTransaction(chain)||!newTransaction.verifyTransaction()){
-
+          if(!newTransaction.verifyTransaction()){
             return false;
           }
         }
         //check block hash validity
         if(chain[i].getPrev() != chain[i-1].getHash()){
-
+          console.log("hash precedent pas bon")
           return false;
         }
         if(!chain[i].hashValue().startsWith('000')){

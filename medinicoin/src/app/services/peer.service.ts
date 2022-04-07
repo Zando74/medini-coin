@@ -69,19 +69,20 @@ export class PeerService {
           }
         });
       })
-
-      let header = new Headers()
-      header.append("Content-Type", "application/json");
-      let requestOptions = {
-        method: 'POST',
-        headers: header,
-        body : JSON.stringify({ peerId : this.peer.id })
-      }
-      let response = await fetch('https://crocovoit.com/peer',requestOptions);
-      if(response.status != 200){
-        console.log("une erreur c'est produite")
-      }
-
+      let alive = setInterval(async () => {
+        let header = new Headers()
+        header.append("Content-Type", "application/json");
+        let requestOptions = {
+          method: 'POST',
+          headers: header,
+          body : JSON.stringify({ peerId : this.peer.id })
+        }
+        let response = await fetch('https://crocovoit.com/peer',requestOptions);
+        if(response.status != 200){
+          console.log("une erreur c'est produite")
+        }
+      },5000)
+      
       await this.getRandomPeer();
       
     })

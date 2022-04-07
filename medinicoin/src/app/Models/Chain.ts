@@ -32,7 +32,7 @@ zuBPHNaRf5MuFUczeQIDAQAB
     }
 
     newTransaction(transaction : Transaction, publicKey :string, peerConnections : Peer.DataConnection[]) : boolean | any {
-        if(!transaction.verifyTransaction()||!transaction.validTransaction(this.blocks)){
+        if(!transaction.verifyTransaction()||!transaction.validTransaction(this.blocks,this.currentTransactions)){
             return false;
         }else{
             this.currentTransactions.push(transaction);

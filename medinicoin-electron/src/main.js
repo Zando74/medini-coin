@@ -11,7 +11,8 @@ function initWindow() {
     height: 900,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    icon: path.join(__dirname, `/dist/favicon.ico`),
   })
   // Electron Build Path
   appWindow.loadURL(
@@ -21,6 +22,7 @@ function initWindow() {
       slashes: true
     })
   );
+  appWindow.removeMenu()
   // Initialize the DevTools.
   appWindow.on('closed', function () {
     appWindow = null
